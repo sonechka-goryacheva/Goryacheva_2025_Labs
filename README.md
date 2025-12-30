@@ -1,1 +1,0 @@
-# Goryacheva_2025_Labs
