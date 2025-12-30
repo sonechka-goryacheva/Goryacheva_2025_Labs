@@ -196,7 +196,6 @@ class TestRK1Functions(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    print("=== ВАШ РК1 С ТЕСТАМИ ===")
     print("\n--- Запуск основной программы ---")
     main()
     
