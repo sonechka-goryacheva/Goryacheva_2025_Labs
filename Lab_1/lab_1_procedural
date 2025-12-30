@@ -1,0 +1,83 @@
+import sys
+import math
+
+def get_coefficient(index, prompt):
+    
+    while True:
+        try:
+            if len(sys.argv) > index:
+                coefficient_str = sys.argv[index]
+            else:
+                print(prompt, end="")
+                coefficient_str = input()
+            
+            coefficient = float(coefficient_str)
+            
+            if index == 1 and coefficient == 0:
+                print("Ошибка: Коэффициент 'A' не может быть равен 0 для биквадратного уравнения.")
+                if len(sys.argv) > index:
+                    sys.argv[index] = None 
+                continue
+                
+            return coefficient
+            
+        except (ValueError, TypeError):
+            print(f"Ошибка: Введено некорректное значение '{coefficient_str}'. Пожалуйста, введите число.")
+            if len(sys.argv) > index:
+                sys.argv[index] = None
+        except IndexError:
+            pass
+
+def solve_biquadratic(a, b, c):
+    
+    d = b**2 - 4*a*c
+    
+    print(f"\nДискриминант (D) для at^2 + bt + c = 0: {d}")
+    
+    t_roots = []
+    if d > 0:
+        t1 = (-b + math.sqrt(d)) / (2*a)
+        t2 = (-b - math.sqrt(d)) / (2*a)
+        t_roots = [t1, t2]
+        print(f"Корни для 't': t1 = {t1}, t2 = {t2}")
+    elif d == 0:
+        t = -b / (2*a)
+        t_roots = [t]
+        print(f"Единственный корень для 't': t = {t}")
+    else:
+        print("Корней для 't' нет, следовательно, нет и действительных корней 'x'.")
+        return set()
+
+    x_roots = set()
+    for t in t_roots:
+        if t > 0:
+            x1 = math.sqrt(t)
+            x2 = -math.sqrt(t)
+            x_roots.add(x1)
+            x_roots.add(x2)
+        elif t == 0:
+            x_roots.add(0.0)
+            
+    return x_roots
+
+def main():
+    print("--- Решение биквадратного уравнения ax^4 + bx^2 + c = 0 (Процедурный) ---")
+    
+    a = get_coefficient(1, "Введите коэффициент A: ")
+    b = get_coefficient(2, "Введите коэффициент B: ")
+    c = get_coefficient(3, "Введите коэффициент C: ")
+    
+    print(f"\nРешаем уравнение: {a}x^4 + ({b})x^2 + ({c}) = 0")
+    
+    roots = solve_biquadratic(a, b, c)
+    
+    if not roots:
+        print("\nРезультат: Уравнение не имеет действительных корней.")
+    else:
+        sorted_roots = sorted(list(roots))
+        print(f"\nРезультат: Найдено {len(sorted_roots)} действительных корней:")
+        for i, root in enumerate(sorted_roots):
+            print(f"x{i+1} = {root}")
+
+if __name__ == "__main__":
+    main()

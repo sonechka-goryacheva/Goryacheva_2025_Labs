@@ -1,0 +1,98 @@
+import sys
+import math
+
+class CoefficientReader:
+    
+    def get_coefficient(self, index, prompt, is_a=False):
+        arg_value = None
+        if len(sys.argv) > index:
+            arg_value = sys.argv[index]
+            
+        while True:
+            try:
+                if arg_value is not None:
+                    coefficient_str = arg_value
+                    arg_value = None 
+                else:
+                    print(prompt, end="")
+                    coefficient_str = input()
+                
+                coefficient = float(coefficient_str)
+                
+                if is_a and coefficient == 0:
+                    print("Ошибка: Коэффициент 'A' не может быть равен 0 для биквадратного уравнения.")
+                    continue
+                    
+                return coefficient
+                
+            except (ValueError, TypeError):
+                print(f"Ошибка: Введено некорректное значение '{coefficient_str}'. Пожалуйста, введите число.")
+
+
+class BiquadraticEquation:
+   
+    def __init__(self, a, b, c):
+        self.a = a
+        self.b = b
+        self.c = c
+        self.roots = set()
+        self.t_roots = []
+        self.discriminant = 0
+        self.solve() 
+
+    def solve(self):
+    
+        if self.a == 0:
+            print("Ошибка: 'A' не может быть 0.")
+            return
+
+        self.discriminant = self.b**2 - 4*self.a*self.c
+        
+        if self.discriminant > 0:
+            t1 = (-self.b + math.sqrt(self.discriminant)) / (2*self.a)
+            t2 = (-self.b - math.sqrt(self.discriminant)) / (2*self.a)
+            self.t_roots = [t1, t2]
+        elif self.discriminant == 0:
+            t = -self.b / (2*self.a)
+            self.t_roots = [t]
+        
+        for t in self.t_roots:
+            if t > 0:
+                x1 = math.sqrt(t)
+                x2 = -math.sqrt(t)
+                self.roots.add(x1)
+                self.roots.add(x2)
+            elif t == 0:
+                self.roots.add(0.0)
+
+    def display_results(self):
+       
+        print(f"\n--- Результаты для {self.a}x^4 + ({self.b})x^2 + ({self.c}) = 0 ---")
+        print(f"Дискриминант (D) для 't': {self.discriminant}")
+        
+        if not self.t_roots:
+            print("Корней для 't' нет.")
+        else:
+            print(f"Корни для 't': {', '.join(map(str, self.t_roots))}")
+            
+        if not self.roots:
+            print("\nРезультат: Уравнение не имеет действительных корней.")
+        else:
+            sorted_roots = sorted(list(self.roots))
+            print(f"\nРезультат: Найдено {len(sorted_roots)} действительных корней:")
+            for i, root in enumerate(sorted_roots):
+                print(f"x{i+1} = {root}")
+
+def main():
+    print("--- Решение биквадратного уравнения ax^4 + bx^2 + c = 0 (ООП) ---")
+    
+    reader = CoefficientReader()
+    a = reader.get_coefficient(1, "Введите коэффициент A: ", is_a=True)
+    b = reader.get_coefficient(2, "Введите коэффициент B: ")
+    c = reader.get_coefficient(3, "Введите коэффициент C: ")
+    
+    equation = BiquadraticEquation(a, b, c)
+    equation.display_results()
+
+if __name__ == "__main__":
+    main()
